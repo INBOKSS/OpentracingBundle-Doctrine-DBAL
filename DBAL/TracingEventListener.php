@@ -30,7 +30,9 @@ final class TracingEventListener
     public function postConnect(ConnectionEventArgs $args): void
     {
         $connection = $args->getConnection();
-        $username = $connection->getUsername();
+        $params = $connection->getParams();
+
+        $username = $params['user'] ?? null;
 
         $wrappedConnection = new TracingDriverConnection(
             $connection->getWrappedConnection(),

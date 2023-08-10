@@ -20,7 +20,7 @@
     "auxmoney/opentracing-bundle-core": "^1.3",
     "opentracing/opentracing": "^1.0.1",
     "doctrine/doctrine-bundle": "^1.11|^2.0",
-    "doctrine/dbal": "^2.11"
+    "doctrine/dbal": "^3.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

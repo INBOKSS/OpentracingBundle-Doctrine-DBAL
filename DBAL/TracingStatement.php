@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Auxmoney\OpentracingDoctrineDBALBundle\DBAL;
 
 use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Driver\Result;
 use IteratorAggregate;
 
 /**
@@ -12,10 +13,7 @@ use IteratorAggregate;
  */
 final class TracingStatement implements IteratorAggregate, StatementCombinedResult, WrappingStatement
 {
-    /**
-     * @var Statement<Statement>
-     */
-    private $statement;
+    private Result|Statement $statement;
     private string $sql;
     private SpanFactory $spanFactory;
     private ?string $username;
@@ -24,11 +22,8 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
      */
     private $params = [];
 
-    /**
-     * @param Statement<Statement> $statement
-     */
     public function __construct(
-        Statement $statement,
+        Result|Statement $statement,
         SpanFactory $spanFactory,
         string $sql,
         ?string $username
@@ -50,7 +45,7 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
     /**
      * @inheritDoc
      */
-    public function columnCount()
+    public function columnCount(): int
     {
         return $this->statement->columnCount();
     }
@@ -130,7 +125,7 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
      * @param array<mixed>|null $params
      * @return bool
      */
-    public function execute($params = null): bool
+    public function execute($params = null):  Result
     {
         $this->spanFactory->beforeOperation($this->sql);
         $result = $this->statement->execute($params);
@@ -138,7 +133,7 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
             $this->sql,
             $params ?? $this->params,
             $this->username,
-            (int) $this->statement->rowCount()
+            (int) $result->rowCount()
         );
         return $result;
     }
@@ -146,15 +141,15 @@ final class TracingStatement implements IteratorAggregate, StatementCombinedResu
     /**
      * @inheritDoc
      */
-    public function rowCount()
+    public function rowCount(): int
     {
         return $this->statement->rowCount();
     }
 
     /**
-     * @return Statement<Statement>
+     * @return Result
      */
-    public function getIterator(): Statement
+    public function getIterator(): Result
     {
         return $this->statement;
     }

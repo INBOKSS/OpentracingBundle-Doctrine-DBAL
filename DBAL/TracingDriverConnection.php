@@ -7,6 +7,8 @@ namespace Auxmoney\OpentracingDoctrineDBALBundle\DBAL;
 use Auxmoney\OpentracingBundle\Internal\Constant;
 use Auxmoney\OpentracingBundle\Service\Tracing;
 use Doctrine\DBAL\Driver\Connection as DBALDriverConnection;
+use Doctrine\DBAL\Driver\Result;
+use Doctrine\DBAL\Driver\Statement;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -34,7 +36,7 @@ final class TracingDriverConnection implements DBALDriverConnection, WrappingDri
      * @param string $prepareString
      * @return TracingStatement
      */
-    public function prepare($prepareString)
+    public function prepare(string $prepareString): Statement
     {
         $statement = $this->decoratedConnection->prepare($prepareString);
         return new TracingStatement($statement, $this->spanFactory, $prepareString, $this->username);
@@ -43,7 +45,7 @@ final class TracingDriverConnection implements DBALDriverConnection, WrappingDri
     /**
      * @return TracingStatement
      */
-    public function query()
+    public function query(string $sql): Result
     {
         $args = func_get_args();
         $parameters = array_slice($args, 1);
@@ -66,7 +68,7 @@ final class TracingDriverConnection implements DBALDriverConnection, WrappingDri
     /**
      * @inheritDoc
      */
-    public function exec($statement)
+    public function exec($statement): int
     {
         $this->spanFactory->beforeOperation($statement);
         $result = $this->decoratedConnection->exec($statement);
