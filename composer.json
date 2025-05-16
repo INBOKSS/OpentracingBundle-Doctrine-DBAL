@@ -1,5 +1,5 @@
 {
-  "name": "auxmoney/opentracing-bundle-doctrine-dbal",
+  "name": "inbox/opentracing-bundle-doctrine-dbal",
   "description": "Symfony Opentracing bundle extension for Doctrine DBAL and ORM",
   "keywords": [
     "auxmoney",
