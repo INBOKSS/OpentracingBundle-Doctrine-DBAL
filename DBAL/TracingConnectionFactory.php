@@ -37,8 +37,8 @@ final class TracingConnectionFactory
      */
     public function createConnection(
         array $params,
-        Configuration $config = null,
-        EventManager $eventManager = null,
+        ?Configuration $config = null,
+        ?EventManager $eventManager = null,
         array $mappingTypes = []
     ): Connection {
         $connection = $this->connectionFactory->createConnection($params, $config, $eventManager, $mappingTypes);
